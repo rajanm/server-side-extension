@@ -52,11 +52,11 @@ In the Qlik load script there is an example of the `Load ...  Extension ...` syn
 
 Qlik Sense Desktop Loader calling SSE function:
 
-![Function called from Loader](qlik-sense-ldr.png?raw=true "Function called from Loader")
+![Function called from Loader](qlik-sense-ldr.PNG?raw=true "Function called from Loader")
 
 Qlik Sense Desktop Sheet calling SSE functions:
 
-![Functions called from Sheet](qlik-sense-fns.png?raw=true "Functions called from Sheet")
+![Functions called from Sheet](qlik-sense-fns.PNG?raw=true "Functions called from Sheet")
 
 ## Run the example!
 To run this example, follow the instructions in [Getting started with the Python examples](../GetStarted.md).
