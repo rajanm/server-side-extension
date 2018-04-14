@@ -50,11 +50,11 @@ There are a number of examples in the sheets demonstrating the same simple funct
 
 In the Qlik load script there is an example of the `Load ...  Extension ...` syntax for a table load using SSE. The field names given in the sent `TableDescription` are mapped to generic ones: _A_max_ and _B_max_. There are also examples of using SSE expressions within a regular load. In that case the SSE call is treated as a scalar or aggregation and only one column can be returned.
 
-Qlik Sense Desktop Loader calling SSE function:
+## Qlik Sense Desktop Loader calling SSE function:
 
 ![Function called from Loader](qlik-sense-ldr.PNG?raw=true "Function called from Loader")
 
-Qlik Sense Desktop Sheet calling SSE functions:
+## Qlik Sense Desktop Sheet calling SSE functions:
 
 ![Functions called from Sheet](qlik-sense-fns.PNG?raw=true "Functions called from Sheet")
 
