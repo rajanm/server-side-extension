@@ -36,9 +36,3 @@ jobs:
       - store_artifacts:
           path: /app/logs
           destination: sse-logs
-
-deployment:
-  staging:
-    branch: sse-python-example
-    heroku:
-      appname: qlik-sse-python
