@@ -4,7 +4,7 @@ This repository provides a server-side extension (SSE) protocol based on gRPC th
 This repository includes documentation that describes the SSE protocol, how to use it and how to build your own plugins. Currently we have examples written in a few different languages only but examples in more languages will come later.  
 
 ## Status
-[![CircleCI](https://circleci.com/gh/qlik-oss/server-side-extension.svg?style=shield)](https://circleci.com/gh/qlik-oss/server-side-extension)  
+[![CircleCI](https://circleci.com/gh/rajanm/server-side-extension.svg?style=shield)](https://circleci.com/gh/rajanm/server-side-extension)  
 
 __Latest SSE Version:__ [v1.1.0](https://github.com/qlik-oss/server-side-extension/releases/latest)  
 __Examples Disclaimer:__ The examples provided are just examples, therefore __use them at your own risk__.   
