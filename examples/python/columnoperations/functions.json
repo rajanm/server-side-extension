@@ -1,4 +1,7 @@
 {
+  "Type of Types": "Type 1 for table and 2 for aggregation",
+  "Type of ReturnType": "ReturnType 1 for numbers and 2 for strings",
+  "Type of Params": "Parameter Type 1 for numbers and 2 for strings",
   "Functions": [
     {
       "Id": 0,
@@ -27,6 +30,53 @@
       "Params": {
         "col1": 1,
         "col2": 1
+      }
+    },
+    {
+      "Id": 3,
+      "Name": "CalcOfColumn",
+      "Type": 1,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 1
+      }
+    },
+    {
+      "Id": 4,
+      "Name": "CalcOfRows",
+      "Type": 2,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 1,
+        "col2": 1
+      }
+    },
+    {
+      "Id": 5,
+      "Name": "ConvertUSDtoINR",
+      "Type": 2,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 1
+      }
+    },
+    {
+      "Id": 6,
+      "Name": "ConvertUSDtoGBP",
+      "Type": 2,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 2,
+        "col2": 1
+      }
+    },
+    {
+      "Id": 7,
+      "Name": "GetUserRole",
+      "Type": 2,
+      "ReturnType": 2,
+      "Params": {
+        "col1": 2
       }
     }
   ]

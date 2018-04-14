@@ -16,6 +16,7 @@ import ServerSideExtension_pb2 as SSE
 import grpc
 from scripteval import ScriptEval
 from ssedata import FunctionType
+from customcalc import customcalc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 _MINFLOAT = float('-inf')
@@ -36,7 +37,7 @@ class ExtensionService(SSE.ConnectorServicer):
         os.makedirs('logs', exist_ok=True)
         log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logger.config')
         logging.config.fileConfig(log_file)
-        logging.info('Logging enabled')
+        logging.info('SSE Main Logging enabled')
 
     @property
     def function_definitions(self):
@@ -53,7 +54,12 @@ class ExtensionService(SSE.ConnectorServicer):
         return {
             0: '_sum_of_rows',
             1: '_sum_of_column',
-            2: '_max_of_columns_2'
+            2: '_max_of_columns_2',
+            3: '_calc_of_column',
+            4: '_calc_of_rows',
+            5: '_convert_usd_to_inr',
+            6: '_convert_usd_to_gbp',
+            7: '_get_user_role',
         }
 
     """
@@ -76,9 +82,112 @@ class ExtensionService(SSE.ConnectorServicer):
                 # Retrieve the numerical value of the parameters
                 # Two columns are sent from the client, hence the length of params will be 2
                 params = [d.numData for d in row.duals]
+                logging.info('params passed to _sum_of_rows method {}'.format(params))
 
                 # Sum over each row
                 result = sum(params)
+                logging.info('result from _sum_of_rows method {}'.format(result))
+
+                # Create an iterable of Dual with a numerical value
+                duals = iter([SSE.Dual(numData=result)])
+
+                # Append the row data constructed to response_rows
+                response_rows.append(SSE.Row(duals=duals))
+
+            # Yield Row data as Bundled rows
+            yield SSE.BundledRows(rows=response_rows)
+
+    @staticmethod
+    def _calc_of_rows(request, context):
+        """
+        Summarize two parameters row wise. Tensor function.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: the same iterable sequence of row data as received
+        """
+        # Iterate over bundled rows
+        for request_rows in request:
+            response_rows = []
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve the numerical value of the parameters
+                # Two columns are sent from the client, hence the length of params will be 2
+                params = [d.numData for d in row.duals]
+                logging.info('params passed to _calc_of_rows method {}'.format(params))
+
+                # Sum over each row
+                # result = sum(params)
+                result = customcalc.multiplyrows(params)
+                logging.info('result from _calc_of_rows method {}'.format(result))
+
+                # Create an iterable of Dual with a numerical value
+                duals = iter([SSE.Dual(numData=result)])
+
+                # Append the row data constructed to response_rows
+                response_rows.append(SSE.Row(duals=duals))
+
+            # Yield Row data as Bundled rows
+            yield SSE.BundledRows(rows=response_rows)
+
+    @staticmethod
+    def _convert_usd_to_inr(request, context):
+        """
+        Converts USD to INR 1 parameter row wise. Tensor function.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: the same iterable sequence of row data as received
+        """
+        # Iterate over bundled rows
+        for request_rows in request:
+            response_rows = []
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve the numerical value of the parameters
+                # Two columns are sent from the client, hence the length of params will be 2
+                logging.info('row passed to _convert_usd_to_inr method {}'.format(row))
+                params = [d.numData for d in row.duals]
+                logging.info('params passed to _convert_usd_to_inr method {}'.format(params))
+
+                result = customcalc.convertusdtoinr(params)
+                logging.info('result from _convert_usd_to_inr method {}'.format(result))
+
+                # Create an iterable of Dual with a numerical value
+                duals = iter([SSE.Dual(numData=result)])
+
+                # Append the row data constructed to response_rows
+                response_rows.append(SSE.Row(duals=duals))
+
+            # Yield Row data as Bundled rows
+            yield SSE.BundledRows(rows=response_rows)
+
+    @staticmethod
+    def _convert_usd_to_gbp(request, context):
+        """
+        Converts USD to INR 1 parameter row wise. Tensor function.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: the same iterable sequence of row data as received
+        """
+
+        # explictly force qlik to not cache the response from this method
+        md = (('qlik-cache', 'no-store'),)
+        context.send_initial_metadata(md)
+
+        # Iterate over bundled rows
+        for request_rows in request:
+            response_rows = []
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve the numerical value of the parameters
+                # Two columns are sent from the client, hence the length of params will be 2
+                logging.info('row passed to _convert_usd_to_gbp method {}'.format(row))
+                userid = [d.strData for d in row.duals][0]
+                logging.info('userid passed to _convert_usd_to_gbp method {}'.format(userid))
+                usd_values = [d.numData for d in row.duals][1]
+                logging.info('usd_values passed to _convert_usd_to_gbp method {}'.format(usd_values))
+
+                result = customcalc.convertusdtogbp(userid,usd_values)
+                logging.info('result from _convert_usd_to_gbp method {}'.format(result))
 
                 # Create an iterable of Dual with a numerical value
                 duals = iter([SSE.Dual(numData=result)])
@@ -118,6 +227,72 @@ class ExtensionService(SSE.ConnectorServicer):
         yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
 
     @staticmethod
+    def _get_user_role(request, context):
+        """
+        Return the user role for user id sent as a parameter.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: string, role if found
+        """
+
+        # explictly force qlik to not cache the response from this method
+        md = (('qlik-cache', 'no-store'),)
+        context.send_initial_metadata(md)
+
+        # Iterate over bundled rows
+        for request_rows in request:
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve numerical value of parameter and append to the params variable
+                # Length of param is 1 since one column is received, the [0] collects the first value in the list
+                userid = [d.strData for d in row.duals][0]
+                # param = [d.strData for d in row.duals][0]
+                # params.append(param)
+
+        # Multiply all rows collected the the params variable
+        logging.info('params passed to _get_user_role method {}'.format(userid))
+        result = customcalc.getuserrole(userid)
+        logging.info('result from _get_user_role method {}'.format(result))
+        #logging.info('result type', type(result))
+
+        # Create an iterable of dual with numerical value
+        duals = iter([SSE.Dual(strData=result)])
+
+        # Yield the row data constructed
+        yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
+
+    @staticmethod
+    def _calc_of_column(request, context):
+        """
+        Summarize the column sent as a parameter. Aggregation function.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: int, sum if column
+        """
+        params = []
+
+        # Iterate over bundled rows
+        for request_rows in request:
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve numerical value of parameter and append to the params variable
+                # Length of param is 1 since one column is received, the [0] collects the first value in the list
+                param = [d.numData for d in row.duals][0]
+                params.append(param)
+
+        # Multiply all rows collected the the params variable
+        logging.info('params passed to _calc_of_column method {}'.format(params))
+        result = customcalc.multiply(params)
+        logging.info('result from _calc_of_column method {}'.format(result))
+        #logging.info('result type', type(result))
+
+        # Create an iterable of dual with numerical value
+        duals = iter([SSE.Dual(numData=result)])
+
+        # Yield the row data constructed
+        yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
+
+    @staticmethod
     def _max_of_columns_2(request, context):
         """
         Find max of each column. This is a table function.
@@ -146,7 +321,7 @@ class ExtensionService(SSE.ConnectorServicer):
         table.fields.add(name='Max2', dataType=SSE.NUMERIC)
         md = (('qlik-tabledescription-bin', table.SerializeToString()),)
         context.send_initial_metadata(md)
-        
+
         # Yield the row data constructed
         yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
 
