@@ -1,7 +1,4 @@
 {
-  "Type of Types": "Type 1 for table and 2 for aggregation",
-  "Type of ReturnType": "ReturnType 1 for numbers and 2 for strings",
-  "Type of Params": "Parameter Type 1 for numbers and 2 for strings",
   "Functions": [
     {
       "Id": 0,

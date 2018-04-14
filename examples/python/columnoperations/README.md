@@ -21,18 +21,18 @@ The parameters sent from Qlik are stored in a _list_ called `args` where the fir
 ## Defined functions
 In this plugin we have a couple of pre-defined functions, which cannot be modified from the UI. The function definitions are located in the  JSON file and include the following information:
 
-| __Function Name__ | __Id__ | __Type__ | __ReturnType__ | __Parameters__ |
-| ----- | ----- | ----- | ------ | ----- |
-| SumOfRows | 0 | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) |
-| SumOfColumn | 1 | 1 (aggregation) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric) |
-| MaxOfColumns_2 | 2 | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) |
+| __Id__ | __Function Name__ | __Type__ | __ReturnType__ | __Parameters__ | Calculation | Remarks |
+| ----- | ----- | ----- | ------ | ----- | ----- | ----- |
+| 0 | SumOfRows | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) | Built-in Python | The `SumOfRows` function is a tensor function summing two columns row-wise. |
+| 1 | SumOfColumn| 1 (aggregation) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric) | Built-in Python | The `SumOfColumn` function is an aggregation and sums the values in a column. |
+| 2 | MaxOfColumns_2 | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) | Built-in Python | The `MaxOfColumns_2` function computes the maximum in each of two columns and returns the maximum values in two columns, therefore making it appropriate to be used from the Qlik load script. The function also sets the TableDescription header before sending the result.  |
+| 3 | CalcOfColumn | 1 (aggregation) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `CalcOfColumn` function is an aggregation and multiplies the values in a column. |
+| 4 | CalcOfRows | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `CalcOfRows` function is a tensor function multiplying two columns row-wise. |
+| 5 | ConvertUSDtoINR | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric) | CustomCalc Library |  The `ConvertUSDtoINR` function is a tensor function that converts column with values in USD to INR currency. This function uses forex_python API.|
+| 6 | ConvertUSDtoGBP | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 2 (string); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `ConvertUSDtoGBP` function is a tensor function that converts column with values in USD to GBP currency. This function uses forex_python API and the users.csv file. In addition, this function takes in the Qlik built-in function OSUser() for authentication and authorization.  |
+| 7 | GetUserRole | 2 (tensor) | 2 (string) | __name:__ 'col1', __type:__ 2 (string) | CustomCalc Library | The `GetUserRole` function is a tensor function that retrieves the role for a given user. This function uses the users.csv file. In addition, this function takes in the Qlik built-in function OSUser() for authentication and authorization. |
 
-
-The `SumOfRows` function is a tensor function summing two columns row-wise.
-
-The `SumOfColumn` function is an aggregation and sums the values in a column.
-
-The `MaxOfColumns_2` function computes the maximum in each of two columns and returns the maximum values in two columns, therefore making it appropriate to be used from the Qlik load script. The function also sets the TableDescription header before sending the result.
+In addition, the 'MaxOfColumns_2' function uses TableDescription
 
 ```python
 # Set and send Table header
@@ -43,12 +43,20 @@ md = (('qlik-tabledescription-bin', table.SerializeToString()),)
 context.send_initial_metadata(md)
 ```
 
-## Qlik documents
+## Qlik Documents
 We provide example documents for Qlik Sense (SSE_Column_Operations.qvf) and QlikView (SSE_Column_Operations.qvw).
 
 There are a number of examples in the sheets demonstrating the same simple functionality using script functions as well as defined functions.
 
 In the Qlik load script there is an example of the `Load ...  Extension ...` syntax for a table load using SSE. The field names given in the sent `TableDescription` are mapped to generic ones: _A_max_ and _B_max_. There are also examples of using SSE expressions within a regular load. In that case the SSE call is treated as a scalar or aggregation and only one column can be returned.
+
+Qlik Sense Desktop Loader calling SSE function:
+
+![alt text](qlik-sense-ldr.png "Function called from Loader")
+
+Qlik Sense Desktop Sheet calling SSE functions:
+
+![alt text](qlik-sense-fns.png "Functions called from Sheet")
 
 ## Run the example!
 To run this example, follow the instructions in [Getting started with the Python examples](../GetStarted.md).
