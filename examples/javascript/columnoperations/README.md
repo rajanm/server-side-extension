@@ -17,7 +17,7 @@ In the Qlik SSE plugin, many functions are defined. This plugin uses the specifi
 | ----- | ----- | ----- | ------ | ----- | ----- | ----- |
 | 4 | CalcOfRows | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `CalcOfRows` function is a tensor function multiplying two columns row-wise. |
 
-In the HTML web page, the below snippet shows how the functions in the Qlik SSE plugin can be invoked like any other Qlik function. Quantity and Price columns are multiplied using custom function 'CalcOfRows'.
+In the HTML web page, the below snippet shows how the functions in the Qlik SSE plugin can be invoked like any other Qlik function. Quantity and Price columns are multiplied using custom function 'CalcOfRows' which returns the Stock Value column.
 
 ```javascript
 {
@@ -45,3 +45,8 @@ To run Python gRPC server and Qlik, follow the instructions in [Getting started 
 
 ### HTML
 To run this example, open the standard_qsd_sse.html in browser once the Qlik SSE plugin and Qlik Sense Desktop are running.
+
+### Demo
+Once you have all the components running, you should be able to see something like below.
+
+![Qlik Sense SSE Visualization](qlik-sse-fns.gif?raw=true "SSE Function called from visualization.")
