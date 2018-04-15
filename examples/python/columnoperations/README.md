@@ -60,3 +60,8 @@ In the Qlik load script there is an example of the `Load ...  Extension ...` syn
 
 ## Run the example!
 To run this example, follow the instructions in [Getting started with the Python examples](../GetStarted.md).
+
+### Demo
+Once you have all the components running, you should be able to do something like below -
+
+![Functions called from Sheet](qlik-sse-fns.gif?raw=true "Functions called from Sheet")
