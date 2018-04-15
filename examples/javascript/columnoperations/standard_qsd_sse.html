@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Search Example - Server Side Extensions</title>
+    <link rel="stylesheet" href="sense-search.min.css"/>
+    <link rel="stylesheet" href="bootstrap.min.css"/>
+  </head>
+  <body style="width: 80%; margin: 20px auto; font-family: arial;">
+    <h2>Search Example - Server Side Extensions</h2>
+    <p>
+      This example uses data from <strong>SSE Example</strong> sample app in Qlik Sense Desktop.
+      The search and suggestions work across <strong>Company Name</strong> and <strong>Industry</strong>.
+    </p>
+    <p>
+      The search input and search results have been added via HTML.
+    </p>
+    <sense-search-input id="myInput" mode="simple"></sense-search-input>
+    <sense-search-results id="myResults" class="table-responsive"></sense-search-results>
+
+    <script type="text/javascript" src="sense-search.min.js"></script>
+    <script type="text/javascript">
+
+      var config = {
+         host: "localhost",
+         port: "4848",
+         isSecure: false,
+         app: "SSESample"
+      };
+
+      senseSearch.connect(config, function(){
+        var resultOptions = {
+          "fields":[
+            {
+              "dimension": "CompanyName",
+              "suppressNull": true
+            },
+            {
+              "dimension": "TransactionID",
+              "suppressNull": true
+            },
+            {
+               "dimension": "Quantity",
+               "suppressNull": true
+             },
+             {
+               "dimension": "Price",
+               "suppressNull": true
+             },
+             {
+               "measure": "round(CustomCalcs.CalcOfRows([Quantity],[Price]))",
+               "label": "Stock Value",
+               "sortType" : "qSortByNumeric",
+               "order" : -1
+             }
+          ],
+          "sortOptions": {
+             "Quantity": {
+               "id": "Quantity",
+               "name": "Quantity",
+               "order": -1,
+               "field": "Quantity",
+               "sortType": "qSortByNumeric"
+             }
+          },
+          "defaultSort": "Quantity"
+        }
+        var inputOptions = {
+          "searchFields": ["CompanyName","Industry"],
+          "suggestFields": ["CompanyName","Industry"]
+        }
+        senseSearch.inputs["myInput"].attach(inputOptions);
+        senseSearch.results["myResults"].attach(resultOptions);
+
+      });
+
+      senseSearch.results["myResults"].renderItems = function(data){
+         var html = "";
+         var rows = data.length;
+         if(rows > 0) {
+           html += "<table class='table table-bordered table-hover'><thead style='text-align: center;'><tr class='info'><th>Company Name</th><th>Transaction ID</th><th>Stock Quantity</th><th>Price</th><th>Stock Value</th></tr></thead><tbody>";
+           data.forEach(function(row, rowIndex){
+              html += "<tr>"
+              for (var field in row){
+                 //html += "<td> " + field;
+                 html += "<td style='text-align: center;'>"+row[field].value + "</td>";
+              }
+              html += "</tr>"
+           });
+           html += "</tbody><tfoot><tr></tr></tfoot></table>";
+         } else {
+           html += "No data found.";
+         }
+         document.getElementById(this.resultsElement).innerHTML = html;
+      }
+
+    </script>
+  </body>
+</html>
