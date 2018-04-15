@@ -40,8 +40,8 @@ We provide an example document for Qlik Sense (SSESample.qvf.qvf).
 ![Qlik Sense Visualization](qlik-sse-cse.PNG?raw=true "Function called from visualization.")
 
 ## Run the example!
-Python & Qlik
+### Python & Qlik
 To run Python gRPC server and Qlik, follow the instructions in [Getting started with the Python examples](../../python/GetStarted.md).
 
-HTML
+### HTML
 To run this example, open the standard_qsd_sse.html in browser once the Qlik SSE plugin and Qlik Sense Desktop are running.
