@@ -3,6 +3,7 @@ import logging
 import logging.config
 import csv
 import os
+import sqlite3
 
 class customcalc:
 
@@ -91,3 +92,20 @@ class customcalc:
                 returnRole =  userRole
                 break
         return returnRole
+
+    @staticmethod
+    def getresults(query):
+        logging.info('query passed to getresults method {}'.format(query))
+        conn = sqlite3.connect('customer.db')
+        logging.info('Opened database successfully')
+
+        cursor = conn.cursor()
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        logging.info('results from getresults method {}'.format(rows))
+        logging.info('Operation done successfully')
+        conn.close()
+
+        return rows

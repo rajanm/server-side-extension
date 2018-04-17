@@ -75,6 +75,26 @@
       "Params": {
         "col1": 2
       }
+    },
+    {
+      "Id": 8,
+      "Name": "GetResultCols",
+      "Type": 2,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 2,
+        "col2": 1
+      }
+    },
+    {
+      "Id": 9,
+      "Name": "GetResultTable",
+      "Type": 2,
+      "ReturnType": 1,
+      "Params": {
+        "col1": 2,
+        "col2": 1
+      }
     }
   ]
 }

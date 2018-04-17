@@ -31,6 +31,8 @@ In this plugin we have a couple of pre-defined functions, which cannot be modifi
 | 5 | ConvertUSDtoINR | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 1 (numeric) | CustomCalc Library |  The `ConvertUSDtoINR` function is a tensor function that converts column with values in USD to INR currency. This function uses forex_python API.|
 | 6 | ConvertUSDtoGBP | 2 (tensor) | 1 (numeric) | __name:__ 'col1', __type:__ 2 (string); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `ConvertUSDtoGBP` function is a tensor function that converts column with values in USD to GBP currency. This function uses forex_python API and the users.csv file. In addition, this function takes in the Qlik built-in function OSUser() for authentication and authorization.  |
 | 7 | GetUserRole | 2 (tensor) | 2 (string) | __name:__ 'col1', __type:__ 2 (string) | CustomCalc Library | The `GetUserRole` function is a tensor function that retrieves the role for a given user. This function uses the users.csv file. In addition, this function takes in the Qlik built-in function OSUser() for authentication and authorization. |
+| 8 | GetResultCols | 2 (tensor) | 1 (number) | __name:__ 'col1', __type:__ 2 (string); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `GetResultCols` function is a tensor function that retrieves a single column for a given SQL query. |
+| 9 | GetResultTable | 2 (tensor) | 1 (number) | __name:__ 'col1', __type:__ 2 (string); __name:__ 'col2', __type:__ 1(numeric) | CustomCalc Library | The `GetResultTable` function is a tensor function that retrieves the table for a given SQL query. |
 
 In addition, the 'MaxOfColumns_2' function uses TableDescription
 
@@ -59,9 +61,20 @@ In the Qlik load script there is an example of the `Load ...  Extension ...` syn
 ![Functions called from Sheet](qlik-sense-fns.PNG?raw=true "Functions called from Sheet")
 
 ## Run the example!
-To run this example, follow the instructions in [Getting started with the Python examples](../GetStarted.md).
+To run t
+![Functihis example, follow the instructions in [Getting started with the Python examples](../GetStarted.md).
 
 ### Demo
 Once you have all the components running, you should be able to do something like below -
 
+Calling a custom function to allow a user to perform currency conversion.
+
 ![Functions called from Sheet](qlik-sse-fns.gif?raw=true "Functions called from Sheet")
+
+Calling a custom function to execute a SQL query to allow a user add a column dynamically.
+
+![Functions called from Sheet](qlik-sse-addcol.gif?raw=true "Column added from Sheet")
+
+Calling a custom function to execute a SQL query to allow a user to add a table dynamically.
+
+![Functions called from Sheet](qlik-sse-addtable.gif?raw=true "Table added from Data Loader.")

@@ -60,6 +60,8 @@ class ExtensionService(SSE.ConnectorServicer):
             5: '_convert_usd_to_inr',
             6: '_convert_usd_to_gbp',
             7: '_get_user_role',
+            8: '_get_result_cols',
+            9: '_get_result_table'
         }
 
     """
@@ -262,6 +264,52 @@ class ExtensionService(SSE.ConnectorServicer):
         yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
 
     @staticmethod
+    def _get_result_cols(request, context):
+        """
+        Return the user role for user id sent as a parameter.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: string, role if found
+        """
+
+        # explictly force qlik to not cache the response from this method
+        md = (('qlik-cache', 'no-store'),)
+        context.send_initial_metadata(md)
+
+        # Iterate over bundled rows
+        response_rows = []
+        for request_rows in request:
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve numerical value of parameter and append to the params variable
+                # Length of param is 1 since one column is received, the [0] collects the first value in the list
+                query = [d.strData for d in row.duals][0]
+                colno = [d.numData for d in row.duals][1]
+                # param = [d.strData for d in row.duals][0]
+                # params.append(param)
+
+                # Multiply all rows collected the the params variable
+                logging.info('params passed to _get_result_cols method {}'.format(query))
+                result = customcalc.getresults(query + str(colno))
+                logging.info('result from _get_result_cols method {}'.format(result))
+                #logging.info('result type is {}'.format(type(result)))
+
+                #resultcols = len(result[0])
+                #results = [_MINFLOAT] * resultcols
+                results = [list(elem) for elem in result]
+                for r in results:
+                    tmprow = r
+                    logging.info('tmprow in _get_result_cols method {}'.format(tmprow))
+                    # duals = iter([SSE.Dual(numData=col) for col in tmprow])
+                    duals = iter([SSE.Dual(numData=tmprow[0])])
+                    response_rows.append(SSE.Row(duals=duals))
+                    #logging.info('response_rows in _get_results method {}'.format(response_rows))
+
+            # Yield Row data as Bundled rows
+            logging.info('response_rows in _get_result_cols method {}'.format(response_rows))
+            yield SSE.BundledRows(rows=response_rows)
+
+    @staticmethod
     def _calc_of_column(request, context):
         """
         Summarize the column sent as a parameter. Aggregation function.
@@ -313,6 +361,8 @@ class ExtensionService(SSE.ConnectorServicer):
                     result[i] = max(result[i], row.duals[i].numData)
 
         # Create an iterable of dual with numerical value
+        logging.info('result from _max_of_two_columns_2 method {}'.format(result))
+        logging.info('result type in _max_of_two_columns_2 method {}'.format(type(result)))
         duals = iter([SSE.Dual(numData=r) for r in result])
 
         # Set and send Table header
@@ -324,6 +374,57 @@ class ExtensionService(SSE.ConnectorServicer):
 
         # Yield the row data constructed
         yield SSE.BundledRows(rows=[SSE.Row(duals=duals)])
+
+    @staticmethod
+    def _get_result_table(request, context):
+        """
+        Return the user role for user id sent as a parameter.
+        :param request: an iterable sequence of RowData
+        :param context:
+        :return: string, role if found
+        """
+
+        logging.info('request passed to _get_result_table method {}'.format(request))
+        # Iterate over bundled rows
+        response_rows = []
+        response_cols = 0
+        for request_rows in request:
+            # Iterating over rows
+            for row in request_rows.rows:
+                # Retrieve numerical value of parameter and append to the params variable
+                # Length of param is 1 since one column is received, the [0] collects the first value in the list
+                query = row.duals[0].strData
+                colno = row.duals[1].numData
+                # param = [d.strData for d in row.duals][0]
+                # params.append(param)
+
+                # Multiply all rows collected the the params variable
+                logging.info('params passed to _get_result_table method {}'.format(query))
+                result = customcalc.getresults(query + str(colno))
+                logging.info('result from _get_result_table method {}'.format(result))
+                #logging.info('result type is {}'.format(type(result)))
+
+                response_cols = 2 #len(result[0])
+                results = [list(elem) for elem in result]
+                for r in results:
+                    tmprow = r
+                    logging.info('tmprow in _get_result_table method {}'.format(tmprow))
+                    duals = iter([SSE.Dual(numData=col) for col in tmprow])
+                    response_rows.append(SSE.Row(duals=duals))
+                    #logging.info('response_rows in _get_results method {}'.format(response_rows))
+
+            # explictly force qlik to not cache the response from this method
+            md = (('qlik-cache', 'no-store'),)
+            # Set and send Table header
+            table = SSE.TableDescription(name='ResultTable', numberOfRows=len(response_rows))
+            table.fields.add(name='Col1', dataType=SSE.NUMERIC)
+            table.fields.add(name='Col2', dataType=SSE.NUMERIC)
+            md = (('qlik-tabledescription-bin', table.SerializeToString()),)
+            context.send_initial_metadata(md)
+
+            # Yield Row data as Bundled rows
+            logging.info('response_rows in _get_result_table method {}'.format(response_rows))
+            yield SSE.BundledRows(rows=response_rows)
 
     @staticmethod
     def _get_function_id(context):
