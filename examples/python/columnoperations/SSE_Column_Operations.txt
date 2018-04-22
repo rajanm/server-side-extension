@@ -1,0 +1,15 @@
+Sub ExecuteQuery(strQuery,tblResult)
+
+  CustomerQuery:
+  Load
+      '$(strQuery)' as Query,
+      RecNo() as Rec
+  AutoGenerate(100);
+
+  // Table loaded from SSE function
+  $(tblResult):
+  LOAD Col1 AS column1, Col2 AS column2 EXTENSION CustomCalcs.GetResultTable(CustomerQuery);
+
+  Drop Table CustomerQuery;
+
+End Sub
