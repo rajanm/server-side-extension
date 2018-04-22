@@ -61,7 +61,8 @@ In the Qlik load script there is an example of the `Load ...  Extension ...` syn
 ![Functions called from Sheet](qlik-sense-fns.PNG?raw=true "Functions called from Sheet")
 
 ## Load Balancing
-GRPC servers can be load balanced using Layer 7 load balancers such as - HAProxy, Envoy and NGINX. Load balancing has been tested using NGINX. Please refer the sample [nginx.conf](nginx.conf?raw=true) file for setting up load balancing.
+GRPC servers can be load balanced using Layer 7 load balancers such as - HAProxy, Envoy and NGINX. Load balancing has been tested using NGINX. Please refer the sample [nginx.conf](nginx.conf?raw=true) file for setting up load balancing. An example of how the end-to-end load balancing might look like is shown below.
+![Qlik SSE Load Balancing](qlik-sse-load-balancer.PNG?raw=true "Load Balancing")
 
 ## Run the example!
 To run this example, follow the instructions in
