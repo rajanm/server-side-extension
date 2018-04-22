@@ -139,6 +139,10 @@ class ExtensionService(SSE.ConnectorServicer):
         :param context:
         :return: the same iterable sequence of row data as received
         """
+        logging.info('_convert_usd_to_inr method called')
+
+        logging.info('request object {}'.format(request))
+
         # Iterate over bundled rows
         for request_rows in request:
             response_rows = []
@@ -160,6 +164,7 @@ class ExtensionService(SSE.ConnectorServicer):
                 response_rows.append(SSE.Row(duals=duals))
 
             # Yield Row data as Bundled rows
+            logging.info('yielding response {}'.format(response_rows))
             yield SSE.BundledRows(rows=response_rows)
 
     @staticmethod
@@ -288,11 +293,9 @@ class ExtensionService(SSE.ConnectorServicer):
                 # param = [d.strData for d in row.duals][0]
                 # params.append(param)
 
-                # Multiply all rows collected the the params variable
                 logging.info('params passed to _get_result_cols method {}'.format(query))
                 result = customcalc.getresults(query + str(colno))
                 logging.info('result from _get_result_cols method {}'.format(result))
-                #logging.info('result type is {}'.format(type(result)))
 
                 #resultcols = len(result[0])
                 #results = [_MINFLOAT] * resultcols
