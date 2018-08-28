@@ -8,7 +8,9 @@ When you use SSE in a chart expression or in the Qlik load script (the `LOAD ...
 #### Chart expressions cannot consume a table returned from SSE plugin
 It is only possible to consume a returned table from an SSE call in the Qlik load script when using the `LOAD ... EXTENSION` statement. In all other cases, including chart expressions, only the first column returned from the plugin will be used by Qlik.
 
-#### Changes to plugins require engine restart (Qlik Limitation)
+#### Changes to plugins require engine restart (Qlik Limitation, except Sense Enterprise April 2018)
 If you add, remove or change the capabilities of a plugin, you must restart the Qlik engine. For Qlik Sense this means either the engine service (for Qlik Sense Enterprise) or Qlik Sense Desktop. For QlikView, you must restart the QlikView Server service or QlikView Desktop.
 
-It is only during engine startup that Qlik tries to contact the SSE plugin by calling the `GetCapability` plugin method.
+It is only during engine startup that Qlik tries to contact the SSE plugin by calling the `GetCapabilities` plugin method.
+
+_Update:_ Starting with Sense Enterprise April 2018 release, `GetCapabilities` is called whenever a plugin is added, removed or reconfigured in Qlik Management Console. This means you do not have to restart the Qlik engine in these cases. If you add, remove or reconfigure a plugin in the Settings.ini file, you still need to restart the Qlik engine.
